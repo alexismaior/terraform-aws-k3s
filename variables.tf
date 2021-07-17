@@ -14,7 +14,7 @@ variable "vol_size" {
   default = 10
 }
 variable "key_name" {}
-variable "public_key_path" {}
+variable "public_key" {}
 variable "user_data_path" {}
 variable "dbuser" {}
 variable "dbpassword" {}

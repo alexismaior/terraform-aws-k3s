@@ -18,7 +18,7 @@ resource "random_id" "node_id" {
 
 resource "aws_key_pair" "auth" {
   key_name   = var.key_name
-  public_key = file(var.public_key_path)
+  public_key = var.public_key
 }
 
 resource "aws_instance" "node" {
