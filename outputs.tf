@@ -1,5 +1,5 @@
 output "instance" {
-  value     = aws_instance.node[*]
+  value = aws_instance.node[*]
 }
 
 output "tg_port" {
