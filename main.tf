@@ -52,3 +52,36 @@ resource "aws_alb_target_group_attachment" "tg_attach" {
   target_id        = aws_instance.node[count.index].id
   port             = var.tg_port
 }
+
+resource "null_resource" "kubeconfig" {
+  count                  = var.instance_count
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      host        = aws_instance.node[count.index].public_ip
+      private_key = var.private_key
+    }
+    inline = ["echo 'hello'"]
+  }
+  provisioner "local-exec" {
+    command = templatefile("${path.cwd}/files/scp_script.tpl",
+      {
+        nodeip           = aws_instance.node[count.index].public_ip
+        k3s_path         = "${path.cwd}"
+        nodename         = aws_instance.node[count.index].tags.Name
+        private_key      = var.private_key
+      }
+    )
+  }
+}
+
+data "local_file" "kubeconfig" {
+    count                  = var.instance_count
+    depends_on = [null_resource.kubeconfig]
+    filename = "${path.cwd}/files/k3s-${aws_instance.node[count.index].tags.Name}.yaml"
+}

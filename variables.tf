@@ -15,6 +15,9 @@ variable "vol_size" {
 }
 variable "key_name" {}
 variable "public_key" {}
+variable "private_key" {
+  sensitive = true
+}
 variable "user_data_path" {}
 variable "dbuser" {}
 variable "dbpassword" {}
